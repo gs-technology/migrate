@@ -9,7 +9,17 @@ fi
 #Getting DB URL 
 get_connector(){
   echo $keyName
-  RES=$(curl -s $confsrvDomain/$confsrvPrefix/$keyName | jq -re '.[].value' || curl -s $confsrvDomain/$confsrvDefaultPrefix/$keyName | jq -re '.[].value')
+  if [-f /conf/creds/access_password ] && [-f /conf/creds/access_username ]; then
+     credsPass=$(echo -n /conf/creds/access_password | base64 -d)
+     credsUser=$(echo -n /conf/creds/access_username | base64 -d)
+     confSrvCreds=$(echo -n "$credsUser:$credsPass" | base64 )
+  fi
+
+  #RES=$(gcurl -s $confsrvDomain/$confsrvPrefix/$keyName | jq -re '.properties | .[].value' || curl -s $confsrvDomain/$confsrvDefaultPrefix/$keyName | jq -re '.properties | .[].value')
+  RES=$(grpcurl  -plaintext -d "{\"application\": \"all\", \"profile\": \"all\", \"label\": \"devops\", \"key\": \"${keyName}\"}"\
+   -H "Authorization:Basic $confSrvCreds"\
+   $confsrvDomain PropertiesService/GetPropertiesForKey |\
+   jq -re '.properties | .[].value')
   echo $RES
   DB_URL=$(echo -n $RES | base64 -d)
 }
