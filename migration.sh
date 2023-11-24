@@ -14,7 +14,7 @@ get_connector(){
      credsPass=$(echo -n "$credsPass" | base64 -d)
      credsUser=$(cat /conf/creds/access_username)
      credsPass=$(echo -n "$credsPass" | base64 -d)
-     confSrvCreds=$(echo -n "{$credsUser}:${credsPass}" | base64 )
+     confSrvCreds=$(echo -n "$credsUser:$credsPass" | base64 )
   fi
 
   #RES=$(gcurl -s $confsrvDomain/$confsrvPrefix/$keyName | jq -re '.properties | .[].value' || curl -s $confsrvDomain/$confsrvDefaultPrefix/$keyName | jq -re '.properties | .[].value')
