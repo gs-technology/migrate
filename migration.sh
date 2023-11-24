@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 # command for migration  docker run -v ~/databases:/databases migration_container {mysql|mongo|clickhouse}  
 # command for fixing  docker run -v ~/databases:/databases migration_container {mysql|mongo|clickhouse} fix db_name fix_version
 # Checking if the Database variable is empty or not correct value
@@ -10,9 +10,9 @@ fi
 get_connector(){
   echo $keyName
   if [ -f /conf/creds/access_password ] && [ -f /conf/creds/access_username ]; then
-     credsPass=$(echo -n /conf/creds/access_password | base64 -di)
-     credsUser=$(echo -n /conf/creds/access_username | base64 -di)
-     confSrvCreds=$(echo -n "$credsUser:$credsPass" | base64 )
+     credsPass=$(cat /conf/creds/access_password | base64 -di)
+     credsUser=$(cat /conf/creds/access_username | base64 -di)
+     confSrvCreds=$(echo -n "{$credsUser}:${credsPass}" | base64 )
   fi
 
   #RES=$(gcurl -s $confsrvDomain/$confsrvPrefix/$keyName | jq -re '.properties | .[].value' || curl -s $confsrvDomain/$confsrvDefaultPrefix/$keyName | jq -re '.properties | .[].value')
