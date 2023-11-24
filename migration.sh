@@ -10,8 +10,10 @@ fi
 get_connector(){
   echo $keyName
   if [ -f /conf/creds/access_password ] && [ -f /conf/creds/access_username ]; then
-     credsPass=$(cat /conf/creds/access_password | base64 -d)
-     credsUser=$(cat /conf/creds/access_username | base64 -d)
+     credsPass=$(cat /conf/creds/access_password)
+     credsPass=$(echo -n $credsPass | base64 -D)
+     credsUser=$(cat /conf/creds/access_username)
+     credsPass=$(echo -n $credsPass | base64 -D)
      confSrvCreds=$(echo -n "{$credsUser}:${credsPass}" | base64 )
   fi
 
