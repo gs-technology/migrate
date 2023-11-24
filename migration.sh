@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 # command for migration  docker run -v ~/databases:/databases migration_container {mysql|mongo|clickhouse}  
 # command for fixing  docker run -v ~/databases:/databases migration_container {mysql|mongo|clickhouse} fix db_name fix_version
 # Checking if the Database variable is empty or not correct value
