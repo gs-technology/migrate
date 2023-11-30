@@ -15,6 +15,7 @@ ADD migration.sh /migration.sh
 RUN wget https://github.com/fullstorydev/grpcurl/releases/download/v1.8.9/grpcurl_1.8.9_linux_x86_64.tar.gz
 RUN tar zxvf grpcurl_1.8.9_linux_x86_64.tar.gz && rm -rf grpcurl_1.8.9_linux_x86_64.tar.gz
 RUN mv grpcurl /usr/bin/ && chmod a+x /usr/bin/grpcurl
+ENV confsrvDefaultPrefix="all"
 ENV confsrvDomain="config:9090"
 RUN chmod a+x /migration.sh
 ENTRYPOINT ["/migration.sh"]
