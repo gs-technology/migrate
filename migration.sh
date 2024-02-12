@@ -15,15 +15,14 @@ get_connector(){
      confSrvCreds=$(echo -n "$credsUser:$credsPass" | base64 )
   fi
 
-  #RES=$(gcurl -s $confsrvDomain/$confsrvPrefix/$keyName | jq -re '.properties | .[].value' || curl -s $confsrvDomain/$confsrvDefaultPrefix/$keyName | jq -re '.properties | .[].value')
-  RES=$(grpcurl  -plaintext -d "{\"application\": \"${confsrvPrefix}\", \"profile\": \"all\", \"label\": \"devops\", \"key\": \"${keyName}\"}"\
-   -H "Authorization:Basic $confSrvCreds"\
-   $confsrvDomain PropertiesService/GetPropertiesForKey |\
-   jq -re '.properties | .[].value' ||\
+  RES=$(grpcurl  -plaintext -d "{\"application\": \"${confsrvPrefix}\", \"profile\": \"${confsrvProfile}\", \"label\": \"devops\", \"key\": \"${keyName}\"}"\
+   -H "Authorization:Basic $confSrvCreds" $confsrvDomain PropertiesService/GetPropertiesForKey | jq -re '.properties | .[].value' ||\
+   grpcurl  -plaintext -d "{\"application\": \"${confsrvDefaultPrefix}\", \"profile\": \"${confsrvProfile}\", \"label\": \"devops\", \"key\": \"${keyName}\"}"\
+   -H "Authorization:Basic $confSrvCreds" $confsrvDomain PropertiesService/GetPropertiesForKey | jq -re '.properties | .[].value' ||\
+   grpcurl  -plaintext -d "{\"application\": \"${confsrvPrefix}\", \"profile\": \"all\", \"label\": \"devops\", \"key\": \"${keyName}\"}"\
+   -H "Authorization:Basic $confSrvCreds" $confsrvDomain PropertiesService/GetPropertiesForKey | jq -re '.properties | .[].value' ||\
    grpcurl  -plaintext -d "{\"application\": \"${confsrvDefaultPrefix}\", \"profile\": \"all\", \"label\": \"devops\", \"key\": \"${keyName}\"}"\
-   -H "Authorization:Basic $confSrvCreds"\
-   $confsrvDomain PropertiesService/GetPropertiesForKey |\
-   jq -re '.properties | .[].value')
+   -H "Authorization:Basic $confSrvCreds" $confsrvDomain PropertiesService/GetPropertiesForKey | jq -re '.properties | .[].value')
   echo $RES
   DB_URL=$(echo -n $RES | base64 -d)
 }
